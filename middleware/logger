@@ -1,0 +1,27 @@
+package middleware
+
+import (
+	"log/slog"
+	"time"
+
+	"github.com/gin-gonic/gin"
+)
+
+func SlogMiddleware(logger *slog.Logger) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		start := time.Now()
+		c.Next()
+		duration := time.Since(start)
+		c.Set("user_name", "fred")
+
+		logger.Info("HTTP request",
+			"method", c.Request.Method,
+			"path", c.Request.URL.Path,
+			"status", c.Writer.Status(),
+			"latency_ms", duration.Milliseconds(),
+			"user_name", c.GetString("user_name"),
+			"client_ip", c.ClientIP(),
+		)
+
+	}
+}
