@@ -25,21 +25,5 @@ func LogMiddleware(logger *zap.Logger) gin.HandlerFunc {
 			zap.Int64("latency_ms", duration.Milliseconds()),
 			zap.String("client_ip", c.ClientIP()),
 		)
-
-		// logger.Debug("Attention, configuration manquante",
-		// 	zap.String("config", "database"),
-		// 	zap.Int("retry", 3),
-		// )
-
-		// logger.Warn("Attention, configuration manquante",
-		// 	zap.String("version", "1.0.0"),
-		// 	zap.Int("port", 8080),
-		// )
-
-		// logger.Error("Erreur critique détectée",
-		// 	zap.String("module", "auth"),
-		// 	zap.Int("code", 500),
-		// )
-
 	}
 }
