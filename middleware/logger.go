@@ -14,7 +14,7 @@ func LogMiddleware(logger *zap.Logger) gin.HandlerFunc {
 		duration := time.Since(start)
 		status := c.Writer.Status()
 		level := zap.InfoLevel
-		if status != 200 {
+		if status != 200 && status != 201 {
 			level = zap.WarnLevel
 		}
 		logger.Log(level, "HTTP request",
