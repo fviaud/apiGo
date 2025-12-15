@@ -69,11 +69,11 @@ func (h *UserHandler) CreateUser(c *gin.Context) {
 
 	if err := h.Repo.Create(&newUser); err != nil {
 		h.Logger.Error("Error creating user in database", zap.Error(err))
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal server error"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	h.Logger.Debug("Created new user", zap.Int("user_id", newUser.ID))
+	h.Logger.Debug("Created new user", zap.Int("user_id", int(newUser.ID)))
 	c.JSON(http.StatusCreated, newUser)
 }
 
@@ -93,7 +93,7 @@ func (h *UserHandler) UpdateUser(c *gin.Context) {
 		return
 	}
 
-	updatedUser.ID = userID
+	updatedUser.ID = uint(userID)
 
 	if err := h.Repo.Update(&updatedUser); err != nil {
 		h.Logger.Error("Error updating user in database", zap.Error(err))
@@ -101,7 +101,7 @@ func (h *UserHandler) UpdateUser(c *gin.Context) {
 		return
 	}
 
-	h.Logger.Debug("Updated user", zap.Int("user_id", updatedUser.ID))
+	h.Logger.Debug("Updated user", zap.Int("user_id", int(updatedUser.ID)))
 	c.JSON(http.StatusOK, updatedUser)
 }
 
@@ -156,4 +156,23 @@ func (h *UserHandler) DeleteUser(c *gin.Context) {
 
 	h.Logger.Debug("Deleted user", zap.Int("user_id", userID))
 	c.JSON(http.StatusOK, gin.H{"message": "User deleted"})
+}
+
+func (h *UserHandler) RestoreUser(c *gin.Context) {
+	id := c.Param("id")
+	userID, err := strconv.Atoi(id)
+	if err != nil {
+		h.Logger.Error("Invalid user ID", zap.Error(err))
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user ID"})
+		return
+	}
+
+	if err := h.Repo.Restore(userID); err != nil {
+		h.Logger.Error("Error restoring user in database", zap.Error(err))
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal server error"})
+		return
+	}
+
+	h.Logger.Debug("Restored user", zap.Int("user_id", userID))
+	c.JSON(http.StatusOK, gin.H{"message": "User restored"})
 }

@@ -18,4 +18,5 @@ func SetupUserRoutes(r *gin.Engine, db *gorm.DB, logger *zap.Logger) {
 	r.PUT("/users/:id", userHandler.UpdateUser)
 	r.PATCH("/users/:id", userHandler.PartialUpdateUser)
 	r.DELETE("/users/:id", userHandler.DeleteUser)
+	r.POST("/users/:id/restore", userHandler.RestoreUser)
 }

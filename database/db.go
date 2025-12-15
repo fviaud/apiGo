@@ -33,6 +33,7 @@ func GetClient() *gorm.DB {
 
 		// Migrate models in the correct order (referenced tables first)
 		db.AutoMigrate(&models.User{})
+		db.AutoMigrate(&models.Post{})
 
 	})
 	return db

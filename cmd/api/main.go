@@ -37,7 +37,9 @@ func main() {
 
 	// Setup routes
 	routes.SetupUserRoutes(r, client, logger)
+	routes.SetupPostRoutes(r, client, logger)
 
+	// Start server
 	if err := r.Run(":" + os.Getenv("PORT")); err != nil {
 		log.Fatal(err)
 	}

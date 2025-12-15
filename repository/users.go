@@ -46,3 +46,16 @@ func (r *UserRepository) PartialUpdate(id int, updates map[string]interface{}) e
 func (r *UserRepository) Delete(id int) error {
 	return r.DB.Delete(&models.User{}, id).Error
 }
+
+func (r *UserRepository) FindByEmailUnscoped(email string) (*models.User, error) {
+	var user models.User
+	err := r.DB.Unscoped().Where("email = ?", email).First(&user).Error
+	if err != nil {
+		return nil, err
+	}
+	return &user, nil
+}
+
+func (r *UserRepository) Restore(id int) error {
+	return r.DB.Unscoped().Model(&models.User{}).Where("id = ?", id).Updates(map[string]interface{}{"deleted_at": nil}).Error
+}
